@@ -1,0 +1,14 @@
+[ {
+  "username" : "HI",
+  "password" : "hi",
+  "data" : {
+    "goals" : [ ],
+    "balance" : 0,
+    "transactions" : [ ],
+    "budgets" : [ {
+      "name" : "General",
+      "amount" : 0.0,
+      "description" : "General budget while you plan your finances."
+    } ]
+  }
+} ]
