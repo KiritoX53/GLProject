@@ -15,4 +15,35 @@
       "description" : "YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY"
     } ]
   }
+}, {
+  "username" : "someone",
+  "password" : "no",
+  "data" : {
+    "goals" : [ ],
+    "balance" : 0,
+    "transactions" : [ ],
+    "budgets" : [ ]
+  }
+}, {
+  "username" : "nigga",
+  "password" : "nigga",
+  "data" : {
+    "goals" : [ ],
+    "balance" : 0,
+    "transactions" : [ ],
+    "budgets" : [ ]
+  }
+}, {
+  "username" : "Mdos",
+  "password" : "mdscsdvuhndsoi",
+  "data" : {
+    "goals" : [ ],
+    "balance" : 0,
+    "transactions" : [ ],
+    "budgets" : [ {
+      "name" : "qwerfwqef",
+      "amount" : 1431254.0,
+      "description" : "fewfewf"
+    } ]
+  }
 } ]
