@@ -1,0 +1,71 @@
+name: Build Multi-Platform Executables
+
+on:
+  push:
+    branches: [ main, master ]  # Triggers on push to main/master
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        include:
+          - os: ubuntu-latest
+            artifact-name: gl-linux
+          - os: windows-latest
+            artifact-name: gl-windows
+    
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up JDK 21
+      uses: actions/setup-java@v4
+      with:
+        java-version: '21'
+        distribution: 'temurin'
+    
+    - name: Make gradlew executable (Linux/Mac)
+      if: runner.os != 'Windows'
+      run: chmod +x gradlew
+    
+    - name: Build with jlink
+      run: ./gradlew jlink
+      if: runner.os != 'Windows'
+    
+    - name: Build with jlink (Windows)
+      run: .\gradlew.bat jlink
+      if: runner.os == 'Windows'
+    
+    - name: Package Linux build
+      if: runner.os != 'Windows'
+      run: |
+        cd app/build/image
+        tar -czf ../../../gl-linux.tar.gz *
+    
+    - name: Package Windows build
+      if: runner.os == 'Windows'
+      run: |
+        cd app/build/image
+        Compress-Archive -Path * -DestinationPath ../../../gl-windows.zip
+    
+    - name: Upload Linux artifact
+      if: runner.os != 'Windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact-name }}
+        path: gl-linux.tar.gz
+        retention-days: 30
+    
+    - name: Upload Windows artifact
+      if: runner.os == 'Windows'
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.artifact-name }}
+        path: gl-windows.zip
+        retention-days: 30
