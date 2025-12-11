@@ -7,14 +7,19 @@ import gl.data.Data;
 import gl.data.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +34,7 @@ public class RegisterController implements SceneController {
         objectMapper.findAndRegisterModules();
     }
     
+    private File selectedFile = null;
     @FXML
     private TextField usernameField;
     
@@ -45,6 +51,91 @@ public class RegisterController implements SceneController {
     private Button validateButton;
     
     @FXML
+    private Button toLogin;
+    @FXML
+private void validate(ActionEvent e) throws IOException {
+    String username = usernameField.getText().trim();
+    String password = passwordField.getText().trim();
+
+    if (selectedFile != null) {
+        try {
+            Path sourcePath = selectedFile.toPath();
+            Path targetPath = Path.of(USERS_FILE);
+
+            // Ensure the directory exists
+            Path targetDir = targetPath.getParent();
+            if (targetDir != null && !Files.exists(targetDir)) {
+                Files.createDirectories(targetDir);
+            }
+
+            // Copy to the target location
+            Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+
+            showAlert(
+                Alert.AlertType.INFORMATION,
+                "Import Success",
+                "User data successfully imported from: " + selectedFile.getName()
+            );
+
+        } catch (IOException er) {
+            showAlert(
+                Alert.AlertType.ERROR,
+                "Import Error",
+                "Failed to copy file: " + er.getMessage()
+            );
+            System.err.println("File copy failed: " + er.getMessage());
+            er.printStackTrace();
+        }
+    }
+
+    // Validate input
+    if (username.isEmpty() || password.isEmpty()) {
+        showAlert(Alert.AlertType.ERROR, "Validation Error", "Username and password are required.");
+        return;
+    }
+
+    List<User> users = loadUsers(objectMapper);
+
+    if (checkUserExist(username, objectMapper)) {
+        showAlert(Alert.AlertType.ERROR, "Registration Error", "Username already exists. Please choose another.");
+        return;
+    }
+
+    // Create new user
+    User newUser = new User(username, password, new Data());
+    users.add(newUser);
+    Util.currentUser = newUser;
+
+    saveCurrentUser(objectMapper);
+
+    showAlert(Alert.AlertType.INFORMATION, "Success", "User registered successfully!");
+    goToMain();
+}
+
+
+
+
+   @FXML
+    private void goToLogin(ActionEvent e) throws IOException {
+        Scene scene = getScene("login.fxml");
+        Stage stage = (Stage) toLogin.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    private void goToMain() throws IOException {
+        Scene scene = getScene("main.fxml");
+        Stage stage = (Stage) usernameField.getScene().getWindow();
+        stage.setScene(scene);
+        stage.show();
+}
+
+
+
+
+
+
+    @FXML
     private void browseFile(ActionEvent e) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select JSON Configuration File");
@@ -55,88 +146,11 @@ public class RegisterController implements SceneController {
         fileChooser.getExtensionFilters().add(jsonFilter);
         
         // Show open dialog
-        File selectedFile = fileChooser.showOpenDialog(browseButton.getScene().getWindow());
+        selectedFile = fileChooser.showOpenDialog(browseButton.getScene().getWindow());
         
         // Update text field if a file was selected
         if (selectedFile != null) {
             filePathField.setText(selectedFile.getAbsolutePath());
         }
     }
-    
-    @FXML
-    private void validate(ActionEvent e) {
-        String username = usernameField.getText().trim();
-        String password = passwordField.getText();
-        String filePath = filePathField.getText().trim();
-        
-        // Validate input
-        if (username.isEmpty() || password.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Validation Error", "Username and password are required.");
-            return;
-        }
-        
-        try {
-            // Read existing users
-            File usersFile = new File(USERS_FILE);
-            List<User> users = new ArrayList<>();
-            
-            if (usersFile.exists() && usersFile.length() > 0) {
-                try {
-                    users = objectMapper.readValue(usersFile, 
-                        objectMapper.getTypeFactory().constructCollectionType(List.class, User.class));
-                } catch (IOException ex) {
-                    // If file is corrupted or empty, start with empty list
-                    System.err.println("Warning: Could not read users.json, starting fresh: " + ex.getMessage());
-                    users = new ArrayList<>();
-                }
-            }
-            
-            // Check if username already exists
-            for (User user : users) {
-                if (user.getUsername().equals(username)) {
-                    showAlert(Alert.AlertType.ERROR, "Registration Error", "Username already exists.");
-                    return;
-                }
-            }
-            
-            // Load Data from config file if provided
-            Data userData = new Data();
-            if (!filePath.isEmpty()) {
-                File configFile = new File(filePath);
-                if (configFile.exists()) {
-                    userData = objectMapper.readValue(configFile, Data.class);
-                } else {
-                    showAlert(Alert.AlertType.WARNING, "File Not Found", "Config file not found. Proceeding without it.");
-                }
-            }
-            
-            // Create new user
-            User newUser = new User(username, password, userData);
-            users.add(newUser);
-            
-            // Ensure directory exists
-            usersFile.getParentFile().mkdirs();
-            
-            // Write back to users.json 
-            objectMapper.enable(SerializationFeature.INDENT_OUTPUT);
-            objectMapper.writeValue(usersFile, users);
-            
-            showAlert(Alert.AlertType.INFORMATION, "Success", "User registered successfully!");
-            
-            // Clear fields
-            usernameField.clear();
-            passwordField.clear();
-            filePathField.clear();
-
-            
-        } catch (IOException ex) {
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to register user: " + ex.getMessage());
-            ex.printStackTrace();
-        }
-
-
-    }
-    
-
-
 }

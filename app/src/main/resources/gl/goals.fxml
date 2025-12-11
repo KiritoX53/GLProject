@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" style="-fx-background-color: linear-gradient(to bottom,rgba(252, 176, 69, 1) 0%, rgba(253, 29, 29, 1) 50%, rgba(131, 58, 180, 1) 95%);" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="657.0" prefWidth="1000.0">
+         <children>
+            <Label alignment="CENTER" prefHeight="70.0" prefWidth="1000.0" style="-fx-font-weight: bold; -fx-font-style: italic; -fx-underline: true;" text="It's budgeting time!">
+               <font>
+                  <Font size="37.0" />
+               </font>
+            </Label>
+            <VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="540.0" prefWidth="920.0" style="-fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 15, 0, 0, 5); -fx-background-radius: 15;">
+               <children>
+                  <ScrollPane maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="98.0" prefWidth="920.0">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0" />
+                    </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+         </children>
+      </VBox>
+   </children>
+</StackPane>

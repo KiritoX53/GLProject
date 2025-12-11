@@ -2,6 +2,8 @@ package gl.data;
 
 import java.util.ArrayList;
 
+import gl.Util;
+
 public class Data {
     private ArrayList<Goal> goals;
     private int balance;
@@ -15,8 +17,8 @@ public class Data {
         goals = new ArrayList<>();
         transactions = new ArrayList<>();
         budgets = new ArrayList<>();
-        budgets.add(new Budget("General", 0.0f, "General budget while you plan your finances."));
         balance = 0;
+        
     }
 
 
@@ -46,6 +48,14 @@ public class Data {
 
     public ArrayList<Budget> getBudgets() {
         return budgets;
+    }
+
+    public void addBudget(Budget budget) {
+        this.budgets.add(budget);
+    }
+
+    public void removeBudget(Budget budget) {
+        this.budgets.remove(budget);
     }
 
     public void setBudgets(ArrayList<Budget> budgets) {

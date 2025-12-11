@@ -9,7 +9,10 @@ public class Budget {
         this.amount = amount;
         this.description = description;
     }
-
+    
+    public Budget() {
+        
+    }
     public String getName() {
         return name;
     }

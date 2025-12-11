@@ -1,14 +1,18 @@
 [ {
-  "username" : "HI",
-  "password" : "hi",
+  "username" : "meww",
+  "password" : "meww",
   "data" : {
     "goals" : [ ],
     "balance" : 0,
     "transactions" : [ ],
     "budgets" : [ {
-      "name" : "General",
-      "amount" : 0.0,
-      "description" : "General budget while you plan your finances."
+      "name" : "HELLO READERRRRRRRR",
+      "amount" : 12345.0,
+      "description" : "teeheeeeeeeeeeeeeeeeeeeeeeeeeeee"
+    }, {
+      "name" : "YAY",
+      "amount" : 12.0,
+      "description" : "YAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY"
     } ]
   }
 } ]
